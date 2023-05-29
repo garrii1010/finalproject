@@ -11,31 +11,31 @@ if ($_SESSION['user'] != 2) {
 $error = '';
 
 if ($_POST) {
-    $username = $_POST['usuario'];
+    $codigoUsuario = $_POST['usuario'];
     $grupo = $_POST['grupo'];
 
     require_once("../s4f3/config.php");
     
-    // Create connection
+    // Crear conexión
     $conn = new mysqli($servername, $username, $password, $dbname);
     
-    // Check connection
+    // Verificar la conexión
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     } 
-    $query = "SELECT id_gr, id_usu FROM ubic WHERE id_gr = '$grupo' AND id_usu = '$username'";
+    $query = "SELECT id_gr, id_usu FROM ubic WHERE id_gr = '$grupo' AND id_usu = '$codigoUsuario'";
     $result = mysqli_query($conn, $query);
 
     if (mysqli_num_rows($result) > 0) {
-	echo "<script> alert('This user is in the group already'); </script>";
+        echo "<script> alert('This user is already in the group'); </script>";
     } else {
-        $insert = "INSERT INTO ubic (id_gr, id_usu) VALUES ('$grupo', '$username')";
-	if (mysqli_query($conn, $insert)){ 
-            header('Location: groups.php');
+        $insert = "INSERT INTO ubic (id_gr, id_usu) VALUES ('$grupo', '$codigoUsuario')";
+        if (mysqli_query($conn, $insert)){ 
+            mysqli_close($conn);
+            header('Location: ../index.php');
             exit;
-            echo "Registered correctly";
+        }
     }
-}
 
     mysqli_close($conn);
 }
